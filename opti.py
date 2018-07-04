@@ -50,9 +50,10 @@ while(1):
 	if(np.shape(frame2)==()):
 		break
 	next = cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY)
+	flow = None
 	#
 	#next=cv2.resize(next,(860,540))
-	flow = cv2.calcOpticalFlowFarneback(prvs,next, 0.5, 3, 15, 3, 5, 1.2, 0)
+	flow = cv2.calcOpticalFlowFarneback(prvs,next, flow, 0.5, 3, 15, 3, 5, 1.2, 0)
 	#
 	flow = cv2.resize(flow,(inp_sz[0],inp_sz[1]))
 	fin_x[j,:,:]=flow[...,0]

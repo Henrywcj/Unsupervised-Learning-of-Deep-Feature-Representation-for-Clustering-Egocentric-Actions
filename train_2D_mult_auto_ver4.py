@@ -4,7 +4,7 @@ from __future__ import print_function
 import sys
 import os as os
 os.environ['THEANO_FLAGS'] = "device=gpu" + sys.argv[2]
-from keras.layers import Input, Convolution2D, MaxPooling2D, UpSampling2D, AveragePooling2D, BatchNormalization, Dropout,Dense, Reshape,Flatten, Deconvolution2D
+from keras.layers import Input, Conv2D, Convolution2D, MaxPooling2D, UpSampling2D, AveragePooling2D, BatchNormalization, Dropout,Dense, Reshape,Flatten, Deconvolution2D
 from keras.models import Model
 import numpy as np
 from keras.models import model_from_json
@@ -14,7 +14,7 @@ from keras import backend as K
 import glob as glob
 import numpy as np
 import random
-from scipy.stats import threshold
+#from scipy.stats import threshold
 
 ######### Set path where data (dense flow and raw frames) are stored
 path=sys.argv[3]
@@ -63,48 +63,48 @@ else:
 
 # Define layer 1
 input_img1 = Input(shape=(1, inp_sz[0], inp_sz[1]))
-x1 = Convolution2D(no_layer[0], 3,3, activation='tanh', border_mode='same')(input_img1)
-x1 = Convolution2D(no_layer[1], 5,5, activation='tanh', border_mode='same')(x1)
-x1 = BatchNormalization(mode=0, axis=1) (x1)
-y1 = MaxPooling2D((2,2), border_mode='valid')(x1)
+x1 = Conv2D(no_layer[0], (3, 3), padding="same", data_format="channels_first", activation="tanh")(input_img1)
+x1 = Conv2D(no_layer[1], (5, 5), padding="same", data_format="channels_first", activation="tanh")(x1)
+x1 = BatchNormalization(axis=1) (x1)
+y1 = MaxPooling2D((2,2), padding='valid', data_format = 'channels_first')(x1)
 x1 = Dropout(drop)(y1)
-x1 = Convolution2D(no_layer[1], 5,5, activation='tanh', border_mode='same')(x1)
-x1 = Convolution2D(no_layer[0], 3,3, activation='tanh', border_mode='same')(x1)
-x1 = BatchNormalization(mode=0, axis=1) (x1)
-x1 = UpSampling2D((2, 2))(x1)
-decoded1 = Convolution2D(1,3,3, border_mode='same', activation='sigmoid')(x1)
+x1 = Conv2D(no_layer[1], (5, 5), padding="same", data_format="channels_first", activation="tanh")(x1)
+x1 = Conv2D(no_layer[0], (3, 3), padding="same", data_format="channels_first", activation="tanh")(x1)
+x1 = BatchNormalization(axis=1) (x1)
+x1 = UpSampling2D((2, 2), data_format = 'channels_first')(x1)
+decoded1 = Conv2D(1, (3, 3), padding="same", activation="sigmoid", data_format="channels_first")(x1)
 
 #Make layer1
-autoencoder1 = Model(input_img1, decoded1)
+autoencoder1 = Model(inputs=input_img1, outputs=decoded1)
 autoencoder1.compile(optimizer=opti, loss='binary_crossentropy')
-encoder1 = Model(input=input_img1, output=y1)
+encoder1 = Model(inputs=input_img1, outputs=y1)
 json_string = autoencoder1.to_json()
 open(path2sav+'autoencoder1_temp.json', 'w').write(json_string)
 
 
 # Define layer2
 input_img2 = Input(shape=(encoder1.output_shape[1], encoder1.output_shape[2], encoder1.output_shape[3]))
-x2 = Convolution2D(no_layer[0], 3,3, activation='tanh', border_mode='same')(input_img2)
-x2 = Convolution2D(no_layer[1], 5,5, activation='tanh', border_mode='same')(x2)
-x2 = BatchNormalization(mode=0, axis=1) (x2)
-y2 = MaxPooling2D((2,2), border_mode='valid')(x2)
+x2 = Conv2D(no_layer[0], (3, 3), padding="same", data_format="channels_first", activation="tanh")(input_img2)
+x2 = Conv2D(no_layer[1], (5, 5), padding="same", data_format="channels_first", activation="tanh")(x2)
+x2 = BatchNormalization(axis=1) (x2)
+y2 = MaxPooling2D((2,2), padding='valid', data_format = 'channels_first')(x2)
 x2 = Dropout(drop)(y2)
-x2 = Convolution2D(no_layer[1], 5,5, activation='tanh', border_mode='same')(x2)
-x2 = Convolution2D(no_layer[0], 3,3, activation='tanh', border_mode='same')(x2)
-x2 = BatchNormalization(mode=0, axis=1)(x2)
-x2 = UpSampling2D((2, 2))(x2)
-decode2 = Convolution2D(no_layer[1],3,3, border_mode='same', activation='tanh')(x2)
+x2 = Conv2D(no_layer[1], (5, 5), padding="same", data_format="channels_first", activation="tanh")(x2)
+x2 = Conv2D(no_layer[0], (3, 3), padding="same", data_format="channels_first", activation="tanh")(x2)
+x2 = BatchNormalization(axis=1)(x2)
+x2 = UpSampling2D((2, 2), data_format = 'channels_first')(x2)
+decode2 = Conv2D(1, (3, 3), padding="same", activation="sigmoid", data_format="channels_first")(x2)
 
 #Make layer2
-autoencoder2 = Model(input_img2, decode2)
+autoencoder2 = Model(inputs=input_img2, outputs=decode2)
 autoencoder2.compile(optimizer=opti, loss='mean_squared_error')
-encoder2 = Model(input=input_img2, output=y2)
+encoder2 = Model(inputs=input_img2, outputs=y2)
 json_string = autoencoder2.to_json()
 open(path2sav+'autoencoder2_temp.json', 'w').write(json_string)
 
 # Define layer3
 input_img3 = Input(shape=(encoder2.output_shape[1], encoder2.output_shape[2], encoder2.output_shape[3]))
-x3 = Flatten()(input_img3)
+x3 = Flatten(data_format = 'channels_first')(input_img3)
 x3 = Dense(500, activation='tanh')(x3)
 y3 = Dense(100, activation='tanh')(x3)
 x3 = Dense(500, activation='tanh')(y3)
@@ -112,9 +112,9 @@ x3 = Dense(encoder2.output_shape[1]*encoder2.output_shape[2]*encoder2.output_sha
 decode3 = Reshape((encoder2.output_shape[1], encoder2.output_shape[2], encoder2.output_shape[3])) (x3)
 
 #Make layer3
-autoencoder3 = Model(input_img3, decode3)
+autoencoder3 = Model(inputs=input_img3, outputs=decode3)
 autoencoder3.compile(optimizer=opti, loss='mean_squared_error')
-encoder3 = Model(input=input_img3, output=y3)
+encoder3 = Model(inputs=input_img3, outputs=y3)
 json_string = autoencoder3.to_json()
 open(path2sav+'autoencoder3_temp.json', 'w').write(json_string)
 
