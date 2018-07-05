@@ -105,7 +105,7 @@ l=GRU(feat_sz*no_auto, return_sequences=True, activation='tanh',inner_activation
 model = Model(input_img, l)
 model.compile(optimizer='RMSprop', loss='mean_squared_error')
 
-feat2=np.reshape(feat2,(np.shape(feat2)[0]/2,np.shape(feat2)[1]*2,np.shape(feat2)[2]))
+feat2=np.reshape(feat2,(np.shape(feat2)[0]//2,np.shape(feat2)[1]*2,np.shape(feat2)[2]))
 feat2=feat2[:,::2,:]
 history=model.fit(feat2, feat2[:,::-1,:],nb_epoch=200,batch_size=250,verbose=1)
 model.save(path2sav+name+'/models_'+suffix+'/pretrained_conv_auto_1_'+type+'.h5')
