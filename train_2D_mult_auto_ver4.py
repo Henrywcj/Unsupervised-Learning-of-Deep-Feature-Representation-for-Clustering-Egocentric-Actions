@@ -93,7 +93,7 @@ x2 = Conv2D(no_layer[1], (5, 5), padding="same", data_format="channels_first", a
 x2 = Conv2D(no_layer[0], (3, 3), padding="same", data_format="channels_first", activation="tanh")(x2)
 x2 = BatchNormalization(axis=1)(x2)
 x2 = UpSampling2D((2, 2), data_format = 'channels_first')(x2)
-decode2 = Conv2D(1, (3, 3), padding="same", activation="sigmoid", data_format="channels_first")(x2)
+decode2 = Conv2D(no_layer[1], (3, 3), padding="same", activation="sigmoid", data_format="channels_first")(x2)
 
 #Make layer2
 autoencoder2 = Model(inputs=input_img2, outputs=decode2)
@@ -190,17 +190,17 @@ for k in range(no_auto):
 	
 	#Fine tune
 	input_img = Input(shape=(1, inp_sz[0], inp_sz[1]))
-	x=Convolution2D(no_layer[0], 3,3, activation='tanh', border_mode='same',weights=autoencoder1.layers[1].get_weights())(input_img)
-	x=Convolution2D(no_layer[1], 5,5, activation='tanh', border_mode='same',weights=autoencoder1.layers[2].get_weights())(x)
-	x=BatchNormalization(mode=0, axis=1, weights=autoencoder1.layers[3].get_weights())(x)
+	x=Conv2D(no_layer[0], (3, 3), padding="same", weights=autoencoder1.layers[1].get_weights(), activation="tanh")(input_img)
+	x=Conv2D(no_layer[1], (5, 5), padding="same", weights=autoencoder1.layers[2].get_weights(), activation="tanh")(x)
+	x=BatchNormalization(axis=1, weights=autoencoder1.layers[3].get_weights())(x)
 	#x=BatchNormalization(mode=2, axis=1)(x)
-	x=MaxPooling2D((2,2), border_mode='valid')(x)
+	x=MaxPooling2D((2,2), padding='valid', data_format = 'channels_first')(x)
 	
-	x=Convolution2D(no_layer[0], 3,3, activation='tanh', border_mode='same', weights=autoencoder2.layers[1].get_weights())(x)
-	x=Convolution2D(no_layer[1], 5,5, activation='tanh', border_mode='same', weights=autoencoder2.layers[2].get_weights())(x)
-	x=BatchNormalization(mode=0, axis=1, weights=autoencoder2.layers[3].get_weights())(x)
+	x=Conv2D(no_layer[0], (3, 3), padding="same", weights=autoencoder2.layers[1].get_weights(), activation="tanh")(x)
+	x=Conv2D(no_layer[1], (5, 5), padding="same", weights=autoencoder2.layers[2].get_weights(), activation="tanh")(x)
+	x=BatchNormalization(axis=1, weights=autoencoder2.layers[3].get_weights())(x)
 	#x=BatchNormalization(mode=2, axis=1)(x)
-	x=MaxPooling2D((2,2), border_mode='valid')(x)
+	x=MaxPooling2D((2,2), padding='valid', data_format = 'channels_first')(x)
 		
 	x = Flatten()(x)
 	x = Dense(500, activation='tanh', weights=autoencoder3.layers[2].get_weights())(x)
