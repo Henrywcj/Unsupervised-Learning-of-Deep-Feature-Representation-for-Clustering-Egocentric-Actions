@@ -9,7 +9,7 @@ import ntpath
 name2=sys.argv[1][:-4]
 
 path2vid,name2=ntpath.split(name2)
-path2vid+='_frame/'
+path2vid+='/'
 fmt=sys.argv[1][-4:]
 fr_rate=int(sys.argv[2])
 #
@@ -20,7 +20,8 @@ name=name2+'_'+str(fr_rate)+'_frame'
 #path2sav='/data4/bharat.b/folder4/data_pre/'
 #path2sav='/Neutron9/bharat.b/data_pre/'
 path2sav=sys.argv[3]
-path2sav = path2sav+path2vid
+path2sav = path2sav+'S2_frame/'
+
 
 if not(os.path.isdir(path2sav)):
 	os.mkdir(path2sav)
