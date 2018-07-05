@@ -82,7 +82,7 @@ for i in folder:
 
 
 
-no_auto=np.shape(fin_feat1)[2]/feat_sz
+no_auto=np.shape(fin_feat1)[2]//feat_sz
 
 input_img = Input(shape=(fr_rate, feat_sz*no_auto))
 l=GRU(100, return_sequences=True, activation='tanh',inner_activation='hard_sigmoid') (input_img)
