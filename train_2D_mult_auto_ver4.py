@@ -133,7 +133,6 @@ for i in folder:
 		random.shuffle(temp)
 		file.extend(temp[0:no_sp_per_vid])
 
-
 random.shuffle(file)
 #l=len(file)-1
 l=len(file)
@@ -177,8 +176,9 @@ for k in range(no_auto):
 		std=np.append(std,np.std(np.std(abs(fin),1),1),0)
 	
 	fin=np.subtract(fin,mean[k])
-	fin=np.divide(fin,std[k])
+        fin=np.divide(fin,std[k])
 	'''
+	print(len(fin))
 	# Train each successive layer
 	history1=autoencoder1.fit(fin,fin, nb_epoch=epoch*2,batch_size=batch_sz,verbose=0)
 	q1 = K.function([autoencoder1.layers[0].input,K.learning_phase()],[autoencoder1.layers[4].output])

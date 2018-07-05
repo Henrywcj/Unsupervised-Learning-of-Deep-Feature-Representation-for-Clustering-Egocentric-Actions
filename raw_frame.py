@@ -9,7 +9,7 @@ import ntpath
 name2=sys.argv[1][:-4]
 
 path2vid,name2=ntpath.split(name2)
-path2vid+='/'
+path2vid+='_frame/'
 fmt=sys.argv[1][-4:]
 fr_rate=int(sys.argv[2])
 #
