@@ -12,15 +12,20 @@ path2vid,name2=ntpath.split(name2)
 path2vid+='/'
 fmt=sys.argv[1][-4:]
 fr_rate=int(sys.argv[2])
-#print(fr_rate)
+# print(fr_rate)
 #
 name=name2+'_'+str(fr_rate)
+# print ("name ", name)
+# print ("name2 ", name2)
 #print(name,name2,path2vid,fmt)
 
 ######### Set path where flow must be stored
 #path2sav='/data4/bharat.b/folder4/data_pre/'
 #path2sav='/Neutron9/bharat.b/data_pre/'
 path2sav=sys.argv[3]
+path2sav = path2sav+path2vid
+# print ("path2sav ", path2sav)
+# print ("path2vid ", path2vid)
 
 if not(os.path.isdir(path2sav)):
 	os.mkdir(path2sav)

@@ -54,9 +54,9 @@ batch_sz=2000
 
 ####Set type here, x for flow_x, y for flow_y and <blank> for frame
 if(len(sys.argv)==6):
-	type=sys.argv[5] #or 'y'
+	typ=sys.argv[5] #or 'y'
 else:
-	type=''
+	typ=''
 
 
 #Architecture
@@ -120,17 +120,19 @@ open(path2sav+'autoencoder3_temp.json', 'w').write(json_string)
 
 folder=sorted(glob.glob(path+name+'/*'))
 
-
+print (folder)
+print (type(path))
+print ("testing")
 # Load file names and randomly shuffle
 file=[]
 for i in folder:
-	i
+	print(i)
 	if(file==[]):
-		temp=glob.glob(i+'/'+'*'+type+'*.npy')
+		temp=glob.glob(i+'/'+'*'+typ+'*.npy')
 		random.shuffle(temp)
 		file=temp[0:no_sp_per_vid]
 	else:
-		temp=glob.glob(i+'/*'+type+'*.npy')
+		temp=glob.glob(i+'/*'+typ+'*.npy')
 		random.shuffle(temp)
 		file.extend(temp[0:no_sp_per_vid])
 
@@ -140,10 +142,10 @@ random.shuffle(file)
 l=len(file)
 mean=[]
 std=[]
-print('starting '+name+' '+type)
+print('starting '+name+' '+typ)
 for k in range(no_auto):
-	if os.path.exists(path2sav+name+'/models_'+suffix+'/pretrained_conv_auto_'+type+'_'+str(k).zfill(2)+'.h5'):
-		print('skipping '+type+' '+str(k))
+	if os.path.exists(path2sav+name+'/models_'+suffix+'/pretrained_conv_auto_'+typ+'_'+str(k).zfill(2)+'.h5'):
+		print('skipping '+typ+' '+str(k))
 		continue
 	
 	# Load each decoder and encoder layer as autoencoder1,2,3
@@ -227,7 +229,7 @@ for k in range(no_auto):
 	model = Model(input_img, decode)
 	model.compile(optimizer=opti, loss='binary_crossentropy')
 	history = model.fit(fin, fin,nb_epoch=epoch,batch_size=batch_sz,verbose=0)
-	model.save_weights(path2sav+name+'/models_'+suffix+'/pretrained_conv_auto_'+type+'_'+str(k).zfill(2)+'.h5')
+	model.save_weights(path2sav+name+'/models_'+suffix+'/pretrained_conv_auto_'+typ+'_'+str(k).zfill(2)+'.h5')
 	print(k)
 
 json_string = model.to_json()
@@ -235,4 +237,4 @@ open(path2sav+'pretrained_conv_auto_'+suffix+'.json', 'w').write(json_string)
 
 #np.save(path2sav+name+'/mean_std_'+suffix+'/mean_'+type+'.npy',mean)
 #np.save(path2sav+name+'/mean_std_'+suffix+'/std_'+type+'.npy',std)
-print(type)
+print(typ)
