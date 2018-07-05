@@ -41,7 +41,7 @@ opti='RMSprop'
 
 # Compute features at fps (regular temporal resolution)
 feat=np.load(path2sav+name+'/'+name_test+'_feats_'+suffix1+'/feat_'+type+'.npy')
-no_auto=np.shape(feat)[2]/feat_sz
+no_auto=np.shape(feat)[2]//feat_sz
 
 model=load_model(path2sav+name+'/models_'+suffix+'/pretrained_conv_auto_0_'+type+'.h5')
 model.compile(optimizer='RMSprop', loss='mean_squared_error')
@@ -60,7 +60,7 @@ if(len(feat2)%2==1):
 	feat2=feat2[:-1]
 
 
-feat2=np.reshape(feat2,(np.shape(feat2)[0]/2,np.shape(feat2)[1]*2,np.shape(feat2)[2]))
+feat2=np.reshape(feat2,(np.shape(feat2)[0]//2,np.shape(feat2)[1]*2,np.shape(feat2)[2]))
 feat2=feat2[:,::2,:]
 q1 = K.function([model.layers[0].input],[model.layers[1].output])
 rec=q1([feat2])
