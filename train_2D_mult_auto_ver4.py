@@ -120,9 +120,6 @@ open(path2sav+'autoencoder3_temp.json', 'w').write(json_string)
 
 folder=sorted(glob.glob(path+name+'/*'))
 
-print (folder)
-print (type(path))
-print ("testing")
 # Load file names and randomly shuffle
 file=[]
 for i in folder:
@@ -160,11 +157,11 @@ for k in range(no_auto):
 	fin=[]
 	
 	# Load data from each file
-	for i in range(k*l/no_auto,(k+1)*l/no_auto):
+	for i in range(k*l//no_auto,(k+1)*l//no_auto):
 		data=np.load(file[i])
 		for ip,io in enumerate(data):
 			data[ip]=io-io.mean()
-			data[ip]=data[ip]/data[ip].std()
+			data[ip]=data[ip]//data[ip].std()
 		
 		data=np.reshape(data, (fr_rate, 1, inp_sz[0],inp_sz[1]))
 		if(fin==[]):

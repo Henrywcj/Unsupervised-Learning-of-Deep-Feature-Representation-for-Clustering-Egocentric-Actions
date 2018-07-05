@@ -20,6 +20,7 @@ name=name2+'_'+str(fr_rate)+'_frame'
 #path2sav='/data4/bharat.b/folder4/data_pre/'
 #path2sav='/Neutron9/bharat.b/data_pre/'
 path2sav=sys.argv[3]
+path2sav = path2sav+path2vid
 
 if not(os.path.isdir(path2sav)):
 	os.mkdir(path2sav)
