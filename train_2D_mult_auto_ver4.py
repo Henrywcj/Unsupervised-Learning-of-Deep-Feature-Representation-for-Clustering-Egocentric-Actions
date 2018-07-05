@@ -180,13 +180,13 @@ for k in range(no_auto):
 	fin=np.divide(fin,std[k])
 	'''
 	# Train each successive layer
-	history1=autoencoder1.fit(fin,fin, nb_epoch=epoch*2,batch_size=batch_sz,verbose=0)
+	history1=autoencoder1.fit(fin,fin, epochs=epoch*2,batch_size=batch_sz,verbose=0)
 	q1 = K.function([autoencoder1.layers[0].input,K.learning_phase()],[autoencoder1.layers[4].output])
 	out1=q1([fin,0])[0]
-	history2=autoencoder2.fit(out1,out1,nb_epoch=epoch,batch_size=batch_sz,verbose=0)
+	history2=autoencoder2.fit(out1,out1,epochs=epoch,batch_size=batch_sz,verbose=0)
 	q1 = K.function([autoencoder2.layers[0].input,K.learning_phase()],[autoencoder2.layers[4].output])
 	out2=q1([out1,0])[0]
-	history3=autoencoder3.fit(out2,out2,nb_epoch=epoch*2,batch_size=batch_sz,verbose=0)
+	history3=autoencoder3.fit(out2,out2,epochs=epoch*2,batch_size=batch_sz,verbose=0)
 	
 	#Fine tune
 	input_img = Input(shape=(1, inp_sz[0], inp_sz[1]))

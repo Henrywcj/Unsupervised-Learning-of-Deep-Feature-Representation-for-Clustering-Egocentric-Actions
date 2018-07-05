@@ -5,7 +5,7 @@ search_dir="./S2"
 for entry in "$search_dir"/*
 do
   echo "$entry"
-  python3 opti.py $entry 30 "./data_pre/S2"
+  python3 opti.py $entry 30 "./data_pre/"
 done
 
 # Extract raw_frames
@@ -13,7 +13,7 @@ done
 for entry in "$search_dir"/*
 do
   echo "$entry"
-  python3 raw_frame.py $entry 30 "./data_pre/S2"
+  python3 raw_frame.py $entry 30 "./data_pre/"
 done
 
 # Train spatial autoencoders for flow_x, flow_y and frame respectivly
