@@ -23,7 +23,7 @@ name=name2+'_'+str(fr_rate)
 #path2sav='/data4/bharat.b/folder4/data_pre/'
 #path2sav='/Neutron9/bharat.b/data_pre/'
 path2sav=sys.argv[3]
-path2sav = path2sav+path2vid
+path2sav = path2sav+'S2/'
 # print ("path2sav ", path2sav)
 # print ("path2vid ", path2vid)
 

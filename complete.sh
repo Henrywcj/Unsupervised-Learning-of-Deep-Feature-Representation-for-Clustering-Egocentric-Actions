@@ -1,6 +1,7 @@
 gpu=0
 
 # Extract optical flow
+mkdir data_pre
 search_dir="./S2"
 for entry in "$search_dir"/*
 do
